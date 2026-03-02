@@ -4,81 +4,255 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Simple Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .calculator {
+            background: #1e1e2e;
+            border-radius: 24px;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255,255,255,0.05);
+            padding: 24px;
+            width: 340px;
+        }
+
+        .display {
+            background: #13131f;
+            border-radius: 16px;
+            padding: 20px 20px 16px;
+            margin-bottom: 20px;
+            text-align: right;
+            min-height: 90px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            border: 1px solid rgba(255,255,255,0.06);
+        }
+
+        .display .expression {
+            color: #6b7280;
+            font-size: 0.9em;
+            min-height: 20px;
+            margin-bottom: 4px;
+            font-family: 'Courier New', monospace;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .display .current {
+            color: #f1f5f9;
+            font-size: 2.4em;
+            font-weight: 300;
+            font-family: 'Courier New', monospace;
+            word-break: break-all;
+            line-height: 1.1;
+        }
+
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+
+        button {
+            padding: 18px 10px;
+            font-size: 1.1em;
+            border: none;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: transform 0.1s, background-color 0.15s, box-shadow 0.15s;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        button:active {
+            transform: translateY(0) scale(0.96);
+            box-shadow: none;
+        }
+
+        .number, .decimal {
+            background: #2a2a3e;
+            color: #e2e8f0;
+        }
+
+        .number:hover, .decimal:hover {
+            background: #33334d;
+        }
+
+        .operator {
+            background: #3d3d6b;
+            color: #a78bfa;
+        }
+
+        .operator:hover {
+            background: #4a4a80;
+        }
+
+        .equals {
+            background: linear-gradient(135deg, #7c3aed, #6d28d9);
+            color: #ffffff;
+            grid-column: span 2;
+            box-shadow: 0 4px 15px rgba(124, 58, 237, 0.35);
+        }
+
+        .equals:hover {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            box-shadow: 0 6px 20px rgba(124, 58, 237, 0.5);
+        }
+
+        .clear {
+            background: #3b1f2b;
+            color: #f87171;
+            grid-column: span 2;
+        }
+
+        .clear:hover {
+            background: #4a2535;
+        }
+
+        .delete {
+            background: #2d2519;
+            color: #fbbf24;
+        }
+
+        .delete:hover {
+            background: #3a2f20;
+        }
+    </style>
 </head>
 <body>
-    <h1>Simple Calculator</h1>
-    <div>
-        <input type="text" id="display" disabled />
-    </div>
-    <div>
-        <button onclick="appendToDisplay('1')">1</button>
-        <button onclick="appendToDisplay('2')">2</button>
-        <button onclick="appendToDisplay('3')">3</button>
-        <button onclick="setOperation('+')">+</button>
-    </div>
-    <div>
-        <button onclick="appendToDisplay('4')">4</button>
-        <button onclick="appendToDisplay('5')">5</button>
-        <button onclick="appendToDisplay('6')">6</button>
-        <button onclick="setOperation('-')">-</button>
-    </div>
-    <div>
-        <button onclick="appendToDisplay('7')">7</button>
-        <button onclick="appendToDisplay('8')">8</button>
-        <button onclick="appendToDisplay('9')">9</button>
-        <button onclick="setOperation('*')">*</button>
-    </div>
-    <div>
-        <button onclick="clearDisplay()">C</button>
-        <button onclick="appendToDisplay('0')">0</button>
-        <button onclick="calculateResult()">=</button>
-        <button onclick="setOperation('/')">/</button>
+    <div class="calculator">
+        <div class="display">
+            <div class="expression" id="expression"></div>
+            <div class="current" id="display">0</div>
+        </div>
+        <div class="buttons">
+            <button class="clear" onclick="clearDisplay()">AC</button>
+            <button class="delete" onclick="deleteLastChar()">DEL</button>
+            <button class="operator" onclick="setOperation('/')">/</button>
+            <button class="operator" onclick="setOperation('*')">×</button>
+
+            <button class="number" onclick="appendToDisplay('7')">7</button>
+            <button class="number" onclick="appendToDisplay('8')">8</button>
+            <button class="number" onclick="appendToDisplay('9')">9</button>
+            <button class="operator" onclick="setOperation('-')">−</button>
+
+            <button class="number" onclick="appendToDisplay('4')">4</button>
+            <button class="number" onclick="appendToDisplay('5')">5</button>
+            <button class="number" onclick="appendToDisplay('6')">6</button>
+            <button class="operator" onclick="setOperation('+')">+</button>
+
+            <button class="number" onclick="appendToDisplay('1')">1</button>
+            <button class="number" onclick="appendToDisplay('2')">2</button>
+            <button class="number" onclick="appendToDisplay('3')">3</button>
+            <button class="decimal" onclick="appendToDisplay('.')">.</button>
+
+            <button class="number" onclick="appendToDisplay('0')">0</button>
+            <button class="equals" onclick="calculateResult()">=</button>
+        </div>
     </div>
     <script>
-        let display = document.getElementById('display');
+        const display = document.getElementById('display');
+        const expression = document.getElementById('expression');
+        const MAX_DECIMAL_PLACES = 10;
+        // Internal operators use standard ASCII; OP_SYMBOLS maps them to display characters
+        const OP_SYMBOLS = { '+': '+', '-': '−', '*': '×', '/': '/' };
+        let currentValue = '0';
         let result = 0;
         let currentOperation = '';
+        let shouldResetDisplay = false;
+
+        function updateDisplay() {
+            display.textContent = currentValue;
+        }
 
         function appendToDisplay(value) {
-            display.value += value;
+            if (shouldResetDisplay) {
+                currentValue = value === '.' ? '0.' : value;
+                shouldResetDisplay = false;
+            } else {
+                if (currentValue === '0' && value !== '.') {
+                    currentValue = value;
+                } else if (value === '.' && currentValue.includes('.')) {
+                    return;
+                } else {
+                    currentValue += value;
+                }
+            }
+            updateDisplay();
         }
 
         function clearDisplay() {
-            display.value = '';
+            currentValue = '0';
             result = 0;
             currentOperation = '';
+            shouldResetDisplay = false;
+            expression.textContent = '';
+            updateDisplay();
+        }
+
+        function deleteLastChar() {
+            if (shouldResetDisplay) return;
+            currentValue = currentValue.length > 1 ? currentValue.slice(0, -1) : '0';
+            updateDisplay();
         }
 
         function setOperation(operation) {
-            if (display.value) {
-                if (currentOperation) {
-                    calculateResult();
-                }
-                result = parseFloat(display.value);
-                currentOperation = operation;
-                display.value = '';
+            if (currentOperation && !shouldResetDisplay) {
+                calculateResult(true);
             }
+            result = parseFloat(currentValue);
+            currentOperation = operation;
+            shouldResetDisplay = true;
+            const opSymbol = OP_SYMBOLS[operation] || operation;
+            expression.textContent = result + ' ' + opSymbol;
         }
 
-        function calculateResult() {
-            if (currentOperation && display.value) {
-                switch (currentOperation) {
-                    case '+':
-                        result += parseFloat(display.value);
-                        break;
-                    case '-':
-                        result -= parseFloat(display.value);
-                        break;
-                    case '*':
-                        result *= parseFloat(display.value);
-                        break;
-                    case '/':
-                        result /= parseFloat(display.value);
-                        break;
-                }
-                display.value = result;
+        function calculateResult(chaining = false) {
+            if (!currentOperation || shouldResetDisplay) return;
+
+            const current = parseFloat(currentValue);
+            if (currentOperation === '/' && current === 0) {
+                display.textContent = 'Error';
+                expression.textContent = '';
+                currentValue = '0';
+                currentOperation = '';
+                shouldResetDisplay = true;
+                return;
+            }
+
+            switch (currentOperation) {
+                case '+': result += current; break;
+                case '-': result -= current; break;
+                case '*': result *= current; break;
+                case '/': result /= current; break;
+            }
+
+            if (!chaining) {
+                expression.textContent = '';
                 currentOperation = '';
             }
+            currentValue = parseFloat(result.toFixed(MAX_DECIMAL_PLACES)).toString();
+            shouldResetDisplay = true;
+            updateDisplay();
         }
     </script>
 </body>
